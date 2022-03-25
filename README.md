@@ -1,4 +1,4 @@
-# <img src="public/icons/icon_48.png" width="45" align="left"> Adblocker Blocker Blocker
+# <img src="public/icons/icon.png" width="45" align="left"> Adblocker Blocker Blocker
 
 My Chrome Extension
 
