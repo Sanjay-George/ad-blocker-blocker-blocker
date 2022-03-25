@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "AdBlocker blocker blocker",
+  "version": "0.1.0",
+  "description": "This is a chrome extension to remove obstrusive popups on websites that demand to pause adblockers to continue browsing the page.",
+  "icons": {
+    "128": "icons/icon.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "AdBlocker blocker blocker",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "run_at": "document_idle",
+      "js": [
+        "contentScript.js"
+      ]
+    }
+  ]
+}
