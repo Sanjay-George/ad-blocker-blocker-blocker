@@ -1,11 +1,11 @@
 # <img src="public/icons/icon.png" width="45" align="left"> Adblocker Blocker Blocker
 
-My Chrome Extension
+This is a chrome extension to remove those annoying popups asking you to remove your adblocker. 
 
-## Features
+## How to Use?
 
-- Feature 1
-- Feature 2
+- Install the extension
+- When an annoying popup comes up, click on the extension. The adblocker blocker should be blocked!
 
 ## Install
 
