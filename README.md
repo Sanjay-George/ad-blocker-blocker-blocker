@@ -20,7 +20,7 @@ This is a chrome extension to remove those annoying popups that ask you to remov
 
 ## Contribution
 
-Suggestions and pull requests are welcomed!.
+Suggestions and pull requests are welcome!.
 
 ---
 
