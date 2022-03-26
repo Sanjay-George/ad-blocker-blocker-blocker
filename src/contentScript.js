@@ -58,12 +58,21 @@ const enableScroll = (element) => {
   const computedStyle = window.getComputedStyle(element);
   const { position, overflow }  = computedStyle;
 
-  if(position !== 'fixed' || overflow !== 'hidden') {
+  if(overflow !== 'hidden') {
       return;
   }
 
-  element.style.setProperty('overflow', 'scroll', 'important');
-  element.style.setProperty('position', 'relative', 'important');
+  // TODO: MAKE THE LOGIC SMARTER
+  // 1. (DONE) Set overflow to scroll only if the content is actually bigger 
+  //    than the visible part (even with overflow=hidden set
+  // 2. 
+
+  if ((element.offsetHeight || element.clientHeight) < element.scrollHeight) {
+     element.style.setProperty('overflow', 'scroll', 'important');
+  }
+  if(position === 'fixed') { 
+    element.style.setProperty('position', 'relative', 'important'); 
+  }
 };
 
 const enableBodyScroll = () => {
@@ -74,9 +83,11 @@ const enableBodyScroll = () => {
 };
 
 const removeTopMostElements = (elements) => {
+  // TODO: CONSIDER REMOVING FULL SCREEN ELEMENTS AS WELL (eg: div used for background blur)
   if(!elements || !elements.length)   return false;
 
   const topZIndex = parseInt(window.getComputedStyle(elements[0]).zIndex, 10);
+  console.log(`highest zIndex: ${topZIndex}`);
   const targets = elements.filter(item => parseInt(window.getComputedStyle(item).zIndex, 10) === topZIndex);
 
   targets.forEach(element => {
@@ -102,7 +113,7 @@ const blockAdBlockerBlocker = () => {
 // Listen for message
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'BLOCK') {
-    console.log('blocking ad');
+    console.log('Trying to block the adblocker blocker!');
     let status = blockAdBlockerBlocker();
     sendResponse({ status: status });
     return true;
