@@ -26,3 +26,4 @@ Suggestions and pull requests are welcome!.
 
 This project was bootstrapped with [Chrome Extension CLI](https://github.com/dutiyesh/chrome-extension-cli)
 
+<a href="https://www.flaticon.com/free-icons/ad-blocker" title="ad blocker icons">Ad blocker icons created by flatart_icons - Flaticon</a>
