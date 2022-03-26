@@ -12,7 +12,7 @@ This is a chrome extension to remove those annoying popups that ask you to remov
 ## What does the extension do?
 
 Here's a diagram showing exactly what it does.  
-![diagram](https://user-images.githubusercontent.com/10389062/160230107-0eecb2b4-bfdb-4217-933f-5984b0e59016.png)
+![diagram-wide-left-aligned](https://user-images.githubusercontent.com/10389062/160230364-ec78d38a-c580-418f-9915-0f7c0cefc229.png)
 
 
 ## How to Use?
