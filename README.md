@@ -1,6 +1,6 @@
 # <img src="public/icons/icon.png" width="45" align="left"> Adblocker Blocker Blocker
 
-This is a chrome extension to remove those annoying popups that ask you to remove your adblocker (or something else, like logging in). 
+This is a chrome extension to remove those annoying popups that ask you to remove your adblocker (or do something else, like logging in). _This is still in developement and isn't ready for public use yet_
 
 ### Examples of popups: 
 
