@@ -12,6 +12,19 @@
 // See https://developer.chrome.com/extensions/content_scripts
 
 
+// TODO: FORM regexes off these, instead of comparing strings directly. 
+// This is to account for filler words
+// TODO: use NLP here 
+// https://opensource.com/article/19/3/natural-language-processing-tools
+const adBlockerBlockerKeywords = { 
+  "disable": 10,
+  "whitelist": 10,
+  "ad blocker": 30,
+  "turn off ad blocker": 50,
+  "disable ad blocker": 50, 
+}; 
+
+
 
 function isElementPartiallyVisible (el) {
   var rect = el.getBoundingClientRect();
@@ -31,7 +44,14 @@ const getAllElementsInViewPort = () => {
   return elements.filter(item => isElementPartiallyVisible(item));
 }; 
 
-const sortElementsByZIndex = (elements) => {
+const isVisible = element => {
+  const computedStyle = window.getComputedStyle(element);
+  return computedStyle.visibility !== 'hidden';
+  // INFO: no need to check for display !== 'none', since when element's display is set to none, it occupies no space
+  //  and getBoundingClientRect() values will be 0. We are checking `isElementPartiallyVisible` earlier on.
+}
+
+const sortElementsByZIndex = elements => {
   if(!elements || !elements.length)       return [];
 
   const filteredELements = elements.filter(element => {
@@ -39,11 +59,11 @@ const sortElementsByZIndex = (elements) => {
       return (
           computedStyle.zIndex !== 'auto' 
           && parseInt(computedStyle.zIndex, 10) > 0
-          && computedStyle.display !== 'none'
+          && isVisible(element)
       );
   });
 
-  const elementsSortedByZIndex = filteredELements.sort((a, b) => {
+  const finalElements = filteredELements.sort((a, b) => {
       return ( 
           parseInt(window.getComputedStyle(a).zIndex, 10) 
               >= parseInt(window.getComputedStyle(b).zIndex, 10) 
@@ -51,21 +71,37 @@ const sortElementsByZIndex = (elements) => {
           : 1
       );
   });
-  return elementsSortedByZIndex;
+  return finalElements;
 };
 
-const enableScroll = (element) => {
+
+const sortElementsByVisibleArea = elements => {
+  if(!elements || !elements.length)       return [];
+
+  // getboundingclientrect
+  const filteredELements = elements.filter(element => isVisible(element));
+  const finalElements = filteredELements.sort((a, b) => {
+    const rectA = a.getBoundingClientRect();
+    const rectB = b.getBoundingClientRect();
+
+    return (
+      (rectA.height * rectA.width) >= (rectB.height * rectB.width) 
+        ? -1
+        : 1
+    );
+  });
+};
+
+
+
+// TODO:Improve this logic 
+const enableScroll = element => {
   const computedStyle = window.getComputedStyle(element);
   const { position, overflow }  = computedStyle;
 
   if(overflow !== 'hidden') {
       return;
   }
-
-  // TODO: MAKE THE LOGIC SMARTER
-  // 1. (DONE) Set overflow to scroll only if the content is actually bigger 
-  //    than the visible part (even with overflow=hidden set
-  // 2. 
 
   if ((element.offsetHeight || element.clientHeight) < element.scrollHeight) {
      element.style.setProperty('overflow', 'scroll', 'important');
@@ -82,12 +118,15 @@ const enableBodyScroll = () => {
   });
 };
 
-const removeTopMostElements = (elements) => {
+const removeTopMostElements = elements => {
   // TODO: CONSIDER REMOVING FULL SCREEN ELEMENTS AS WELL (eg: div used for background blur)
+  // removing top most elements isn't making sense, since there could be other elements with greater z-index
+  // eg: https://www.independent.co.uk/asia/east-asia/kim-jong-un-north-korea-video-missile-test-b2044392.html
+
   if(!elements || !elements.length)   return false;
 
   const topZIndex = parseInt(window.getComputedStyle(elements[0]).zIndex, 10);
-  console.log(`highest zIndex: ${topZIndex}`);
+  console.log(`highest zIndex: ${topZIndex}, element: ${elements[0]}`);
   const targets = elements.filter(item => parseInt(window.getComputedStyle(item).zIndex, 10) === topZIndex);
 
   targets.forEach(element => {
@@ -99,7 +138,10 @@ const removeTopMostElements = (elements) => {
 
 const blockAdBlockerBlocker = () => { 
   const viewPortElements = getAllElementsInViewPort();
+
   const elementsSortedByZIndex = sortElementsByZIndex(viewPortElements);
+  const elementsSortedByVisibleArea = sortElementsByVisibleArea(viewPortElements);
+  // const elementsMatchingKeywords =  
 
   if(!removeTopMostElements(elementsSortedByZIndex)) {
     return false;
@@ -124,3 +166,24 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   sendResponse({ status: false });
   return true;
 });
+
+
+
+
+/*
+A. Consider only elements that are at least partially visible (using BoundingClientRect)
+B. Features to consider                     weight
+i.   Z index                                30 * order/index in array
+ii.  Area (l * w) occupied in viewport      50 * area
+iii. Text Context of element                100 * keywords matched  
+
+C. Approaches
+1. Knock off the element with heighest weight
+2. Create list of each Feature. Knock off elements that are intersecting (top 2-3)
+
+D. Cases
+To eliminate background blur (if a div is used)
+- area feature/weight should take care of this 
+
+
+*/
