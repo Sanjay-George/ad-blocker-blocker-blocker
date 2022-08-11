@@ -15,6 +15,7 @@ This is a chrome extension to remove those annoying popups that ask you to remov
 Here's a diagram showing exactly what it does.  
 ![diagram-wide-left-aligned](https://user-images.githubusercontent.com/10389062/163733513-d0b1e50e-ead5-4ebd-9b5a-c0f8673dec4f.png)
 
+To make things clear, the *ad-blocker-blocker-blocker* blocks *ad-blocker-blockers*, which are employed by several websites to force you to block your *ad-blockers*.
 
 ## How to Use?
 
